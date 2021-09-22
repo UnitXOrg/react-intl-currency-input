@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { string, func, number, bool, shape, node } from 'prop-types';
+import { string, func, number, bool, shape, node, object } from 'prop-types';
 
 import formatCurrency from './format-currency';
 
@@ -31,6 +31,7 @@ const IntlCurrencyInput = ({
   onBlur,
   onFocus,
   onKeyPress,
+  currencySymbolOverride,
   ...otherProps
 }) => {
   const inputRef = useCallback(node => {
@@ -91,6 +92,15 @@ const IntlCurrencyInput = ({
   const calculateValues = (inputFieldValue) => {
     const value = normalizeValue(inputFieldValue);
     const maskedValue = formatCurrency(value, safeConfig(), currency);
+
+    // FIX: ZAR -> R 
+    // We can overwrite the config only for the display and we can now take the current currency
+    // and grab use this as the key to map which value from [currencySymbolOverride] we should use as replacer
+    // currencySymbolOverride = {"currency":"replacement value"}, EG: {"USD":"MLSD"}, {"ZAR":"R"}
+    if (currencySymbolOverride) {
+      const ovValue = currencySymbolOverride[currency]
+      return [value, maskedValue.replace(currency, ovValue)];
+    }
 
     return [value, maskedValue];
   };
@@ -170,6 +180,7 @@ IntlCurrencyInput.propTypes = {
   component: node.isRequired,
   currency: string.isRequired,
   config: shape().isRequired,
+  currencySymbolOverride: object,
   autoFocus: bool.isRequired,
   autoSelect: bool.isRequired,
   autoReset: bool.isRequired,
@@ -184,6 +195,7 @@ IntlCurrencyInput.defaultProps = {
   currency: 'USD',
   value: 0,
   config: defaultConfig,
+  currencySymbolOverride: null,
   autoFocus: false,
   autoSelect: false,
   autoReset: false,

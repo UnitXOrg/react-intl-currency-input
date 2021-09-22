@@ -45,6 +45,29 @@ const BrlCurrencyComponent = () => {
 export default BrlCurrencyComponent;
 
 ```
+
+### Override currency symbol usage
+
+```js
+
+const BrlCurrencyComponent = () => {
+  const handleChange = (event, value, maskedValue) => {
+    ...
+  };
+
+  return(
+    <IntlCurrencyInput 
+      currency="ZAR"
+      currencySymbolOverride={{"ZAR": "R"}}
+      config={currencyConfig}
+      onChange={handleChange} />
+  );
+}
+
+export default BrlCurrencyComponent;
+
+```
+
 ### Example
 
 ![example](https://cloud.githubusercontent.com/assets/333482/23334967/c7eff3fe-fb80-11e6-870f-be21fe8935ea.gif)
@@ -63,6 +86,7 @@ And a new browser window will open at [http://localhost:3000](http://localhost:3
 | :---: | :---: | :---: | :--- |
 | defaultValue | number | 0 | Sets the default / initial value to be used by the component on the first load |
 | currency | string | USD | Sets the [currency code](http://www.xe.com/iso4217.php) |
+| currencySymbolOverride | object | null | Sets the override value for the [currency code](http://www.xe.com/iso4217.php) |
 | config | object | USD related configuration | Configuration object compliant with react-intl [intlShape](https://github.com/yahoo/react-intl/wiki/API#intlshape) |
 | autoFocus | boolean | false | Enables auto-focus when the component gets displayed |
 | autoSelect | boolean | false | Enables auto-select when the component gets displayed |
